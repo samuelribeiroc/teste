@@ -126,7 +126,7 @@
             <p class="mt-2 text-sm text-neutral-400 md:text-neutral-400">example@email.com</p>
         
             <div class="w-full flex items-center mt-4">
-              <button on:click={changeToggle} class="px-4 py-3 text-sm font-medium tracking-wider text-neutral-100 uppercase transition-colors duration-300 transform bg-blue-600 rounded-md hover:bg-blue-500 focus:outline-none disabled:bg-neutral-400">{strButton}</button>
+              <button on:click={changeToggle} id="toggle" class="px-4 py-3 text-sm font-medium tracking-wider text-neutral-100 uppercase transition-colors duration-300 transform bg-blue-600 rounded-md hover:bg-blue-500 focus:outline-none disabled:bg-neutral-400">{strButton}</button>
             </div>
         </div>
     </div>
