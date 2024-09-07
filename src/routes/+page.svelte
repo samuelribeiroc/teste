@@ -1,6 +1,7 @@
 <script lang="ts">
-  let toggle = true;
-  let strButton = "start";
+  let toggle: boolean = true;
+  let strButton: string = "start";
+  let seconds: number = 15;
 
   const changeToggle = () => {
     toggle = !toggle;
@@ -10,6 +11,19 @@
     } else {
       strButton = "stop";
     }
+  }
+
+  const formatTime = (num: number) => {
+    return num < 10 ? '0' + num : num;
+  }
+
+  const startCountdown = () => {
+    const interval = setInterval(() => {
+			seconds--;
+			if (seconds <= 0) {
+				clearInterval(interval);
+			}
+		}, 1000);
   }
 
 </script>
