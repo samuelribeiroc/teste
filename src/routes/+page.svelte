@@ -1,7 +1,23 @@
 <script lang="ts">
+  interface formInterface {
+    name: string;
+    telephone: string;
+    email: string;
+  };
+
   let toggle: boolean = true;
+  let candidatePage: boolean = true;
+
   let strButton: string = "start";
+  let modalMessage: string = "";
+
   let seconds: number = 15;
+
+  let form: formInterface = {
+    name: "",
+    telephone: "",
+    email: ""
+  };
 
   const changeToggle = () => {
     toggle = !toggle;
@@ -18,21 +34,31 @@
   }
 
   const startCountdown = () => {
+    changeToggle();
     const interval = setInterval(() => {
 			seconds--;
 			if (seconds <= 0) {
 				clearInterval(interval);
+        changeToggle();
 			}
 		}, 1000);
   }
 
 </script>
 
-<div class="w-screen h-screen bg-neutral-950 flex items-center">
+<div class="w-screen h-screen bg-neutral-950 flex items-center relative">
+  <a href="/candidate">
+    <button
+      class="px-4 py-3 text-sm font-medium tracking-wider text-neutral-100 uppercase transition-colors duration-300 transform bg-green-700 rounded-md hover:bg-green-800 focus:outline-none disabled:bg-red-400 absolute top-2 right-2"
+      disabled={candidatePage}
+    >
+      candidate
+    </button>
+  </a>
   
   <section class="flex flex-col max-w-4xl mx-auto overflow-hidden bg-neutral-100 rounded-lg shadow-lg md:flex-row relative">
     <div class="right-2 top-0 absolute">
-      timer
+      timer: 00:{formatTime(seconds)}
     </div>
     
     <div class="md:flex md:items-center md:justify-center md:w-1/2 bg-neutral-800">
@@ -42,7 +68,7 @@
             <p class="mt-2 text-sm text-neutral-400 md:text-neutral-400">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consectetur obcaecati odio</p>
         
             <div class="w-full flex items-center mt-4">
-              <button on:click={changeToggle} class="px-4 py-3 text-sm font-medium tracking-wider text-neutral-100 uppercase transition-colors duration-300 transform bg-blue-600 rounded-md hover:bg-blue-500 focus:outline-none disabled:bg-neutral-400">{strButton}</button>
+              <button on:click={startCountdown} class="px-4 py-3 text-sm font-medium tracking-wider text-neutral-100 uppercase transition-colors duration-300 transform bg-blue-600 rounded-md hover:bg-blue-500 focus:outline-none disabled:bg-neutral-400">{strButton}</button>
             </div>
         </div>
     </div>
@@ -50,13 +76,42 @@
     <div class="flex items-center justify-center pb-6 md:py-0 md:w-1/2">
         <form>
             <div class="flex flex-col p-1.5 overflow-hidden rounded-lg gap-4 p-8">
-                <input class="px-6 py-2 text-neutral-700 placeholder-neutral-500 bg-white outline-none focus:placeholder-transparent disabled:bg-neutral-200" type="text" name="email" placeholder="Enter your email" aria-label="Enter your email" disabled={toggle}>
+                <input
+                  class="px-6 py-2 text-neutral-700 placeholder-neutral-500 bg-white outline-none focus:placeholder-transparent disabled:bg-neutral-200"
+                  type="text"
+                  name="name"
+                  id="name"
+                  placeholder="Enter your name"
+                  aria-label="Enter your name"
+                  disabled={toggle}
+                >
                 
-                <input class="px-6 py-2 text-neutral-700 placeholder-neutral-500 bg-white outline-none focus:placeholder-transparent disabled:bg-neutral-200" type="text" name="email" placeholder="Enter your email" aria-label="Enter your email" disabled={toggle}>
-                
-                <input class="px-6 py-2 text-neutral-700 placeholder-neutral-500 bg-white outline-none focus:placeholder-transparent disabled:bg-neutral-200" type="text" name="email" placeholder="Enter your email" aria-label="Enter your email" disabled={toggle}>
+                <input
+                  class="px-6 py-2 text-neutral-700 placeholder-neutral-500 bg-white outline-none focus:placeholder-transparent disabled:bg-neutral-200"
+                  type="text"
+                  name="telephone"
+                  id="telephone"
+                  placeholder="Enter your telephone"
+                  aria-label="+12123456789"
+                  disabled={toggle}
+                >
 
-                <button class="px-4 py-3 text-sm font-medium tracking-wider text-neutral-100 uppercase transition-colors duration-300 transform bg-blue-600 rounded-md hover:bg-blue-500 focus:bg-blue-500 focus:outline-none disabled:bg-neutral-400" disabled={toggle}>send</button>
+                <input
+                  class="px-6 py-2 text-neutral-700 placeholder-neutral-500 bg-white outline-none focus:placeholder-transparent disabled:bg-neutral-200"
+                  type="email"
+                  name="email"
+                  id="email"
+                  placeholder="Enter your email"
+                  aria-label="Enter your email"
+                  disabled={toggle}
+                >
+
+                <button
+                  class="px-4 py-3 text-sm font-medium tracking-wider text-neutral-100 uppercase transition-colors duration-300 transform bg-blue-600 rounded-md hover:bg-blue-500 focus:bg-blue-500 focus:outline-none disabled:bg-neutral-400"
+                  disabled={toggle}
+                >
+                  send
+                </button>
             </div>
         </form>
     </div>
