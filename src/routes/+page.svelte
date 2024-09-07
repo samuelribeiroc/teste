@@ -26,7 +26,7 @@
     }
   }
 
-  const formatTime = (num: number) => {
+  const formatTime = (num: number): string | number => {
     return num < 10 ? '0' + num : num;
   }
 
