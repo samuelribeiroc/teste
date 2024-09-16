@@ -1,5 +1,7 @@
 <script lang="ts">
-  import { savedFields, type formInterface, candidatePage } from "../store/store";
+  import { savedFields, type formInterface, seconds,
+    toggle, startCountdown, clearCountdown, candidatePage } from "../store/store";
+  import { onMount } from "svelte";
 
   let form: formInterface = {
     name: '',
@@ -7,49 +9,47 @@
     email: ''
   }
 
-  let toggle: boolean = true;
-
   let strButton: string = "start";
-
   let modalOpen: boolean = false;
   let modalMessage: string = "";
 
-  let seconds: number = 15;
-
   const changeToggle = () => {
-    toggle = !toggle;
-
-    if (toggle) {
-      strButton = "start";
-      if (seconds !== 15) {
-        seconds = 15;
+    toggle.update(value => {
+      if (!value) {
+        strButton = "start";
+        seconds.set(15);
+        clearFields();
+        clearCountdown();
+      } else {
+        strButton = "stop";
+        startCountdown();
       }
-      cleanFields();
-    } else {
-      strButton = "stop";
+      return !value;
+    });
+  };
+
+  $: if ($toggle) {
+    strButton = "start";
+  } else {
+    strButton = "stop";
+  }
+
+  $: if ($seconds <= 0) {
+    clearFields();
+  }
+
+  onMount(() => {
+    if (!$toggle) {
       startCountdown();
-      seconds = 15;
     }
+  });
+
+  const toggleModal = () => {
+    modalOpen = !modalOpen;
   }
 
   const formatTime = (num: number): string | number => {
     return num < 10 ? '0' + num : num;
-  }
-
-  const startCountdown = () => {
-    const interval = setInterval(() => {
-      if (!toggle) {
-        seconds--;
-        if (seconds <= 0) {
-          clearInterval(interval);
-          changeToggle();
-          modalMessage = "Challenge completed with failure!";
-          modalOpen = true;
-        }
-      } else {
-        clearInterval(interval);
-      }
-		}, 1000);
   }
 
   const handleChangeField = (e: Event) => {
@@ -66,13 +66,13 @@
     const telephoneRegex = /^\+(?:[0-9] ?){6,14}[0-9]$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    return ( !form.name.trim() && form.name === "" &&
-      !telephoneRegex.test(form.telephone) && form.telephone === "" &&
-      !emailRegex.test(form.email) && form.email === ""
+    return ( !form.name.trim() || form.name === "" ||
+      !telephoneRegex.test(form.telephone) || form.telephone === "" ||
+      !emailRegex.test(form.email) || form.email === ""
     )
   }
 
-  const cleanFields = () => {
+  const clearFields = () => {
     form.name = '';
     form.telephone = '';
     form.email = '';
@@ -84,20 +84,14 @@
     if (!formValidate()) {
       modalMessage = "Challenge successfully completed!";
       modalOpen = true;
-      changeToggle();
       savedFields.set({ ...form })
-      cleanFields();
+      changeToggle();
       candidatePage.update(() => false);
     } else {
       modalMessage = "Challenge not completed yet!";
       modalOpen = true;
     }
   }
-
-  const toggleModal = () => {
-    modalOpen = !modalOpen;
-  }
-
 </script>
 
 <div class="w-screen h-screen bg-neutral-950 flex items-center relative">
@@ -127,7 +121,7 @@
   
   <section class="flex flex-col max-w-4xl mx-auto overflow-hidden bg-neutral-100 rounded-lg shadow-lg md:flex-row relative">
     <div class="right-2 top-0 absolute text-neutral-600">
-      timer: 00:{formatTime(seconds)}
+      timer: 00:{formatTime($seconds)}
     </div>
     
     <div class="md:flex md:items-center md:justify-center md:w-1/2 bg-neutral-800">
@@ -157,7 +151,7 @@
                   aria-label="Enter your name"
                   value={form.name}
                   on:change={handleChangeField}
-                  disabled={toggle}
+                  disabled={$toggle}
                 >
                 
                 <input
@@ -169,7 +163,7 @@
                   aria-label="+12123456789"
                   value={form.telephone}
                   on:change={handleChangeField}
-                  disabled={toggle}
+                  disabled={$toggle}
                 >
 
                 <input
@@ -181,12 +175,12 @@
                   aria-label="Enter your email"
                   value={form.email}
                   on:change={handleChangeField}
-                  disabled={toggle}
+                  disabled={$toggle}
                 >
 
                 <button
                   class="px-4 py-3 text-sm font-medium tracking-wider text-neutral-100 uppercase transition-colors duration-300 transform bg-blue-600 rounded-md hover:bg-blue-500 focus:bg-blue-500 focus:outline-none disabled:bg-neutral-400"
-                  disabled={toggle}
+                  disabled={$toggle}
                   type="submit"
                 >
                   send
