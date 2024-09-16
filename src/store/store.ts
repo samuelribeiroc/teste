@@ -1,13 +1,15 @@
 import { writable, type Writable } from "svelte/store";
 
-interface formInterface {
+export interface formInterface {
   name: string;
   telephone: string;
   email: string;
 };
 
-export const form: Writable<formInterface> = writable({
+export let savedFields: Writable<formInterface> = writable({
   name: "",
   telephone: "",
   email: ""
-})
+});
+
+export let candidatePage: Writable<boolean> = writable(true);

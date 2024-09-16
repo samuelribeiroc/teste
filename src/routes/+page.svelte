@@ -1,8 +1,13 @@
 <script lang="ts">
-  import { form } from "../store/store";
+  import { savedFields, type formInterface, candidatePage } from "../store/store";
+
+  let form: formInterface = {
+    name: '',
+    telephone: '',
+    email: ''
+  }
 
   let toggle: boolean = true;
-  let candidatePage: boolean = true;
 
   let strButton: string = "start";
 
@@ -19,6 +24,7 @@
       if (seconds !== 15) {
         seconds = 15;
       }
+      cleanFields();
     } else {
       strButton = "stop";
       startCountdown();
@@ -50,20 +56,26 @@
     const input = e.target as HTMLInputElement;
     const { name, value } = input;
 
-    form.update(currentForm => ({
-      ...currentForm,
+    form = {
+      ...form,
       [name]: value
-    }))
+    }
   }
 
   const formValidate = (): boolean => {
     const telephoneRegex = /^\+(?:[0-9] ?){6,14}[0-9]$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    return ( !$form.name.trim() && $form.name === "" &&
-      !telephoneRegex.test($form.telephone) && $form.telephone === "" &&
-      !emailRegex.test($form.email) && $form.email === ""
+    return ( !form.name.trim() && form.name === "" &&
+      !telephoneRegex.test(form.telephone) && form.telephone === "" &&
+      !emailRegex.test(form.email) && form.email === ""
     )
+  }
+
+  const cleanFields = () => {
+    form.name = '';
+    form.telephone = '';
+    form.email = '';
   }
 
   const handleSubmit = (e: Event) => {
@@ -73,7 +85,9 @@
       modalMessage = "Challenge successfully completed!";
       modalOpen = true;
       changeToggle();
-      candidatePage = false;
+      savedFields.set({ ...form })
+      cleanFields();
+      candidatePage.update(() => false);
     } else {
       modalMessage = "Challenge not completed yet!";
       modalOpen = true;
@@ -105,7 +119,7 @@
   <a href="/candidate">
     <button
       class="px-4 py-3 text-sm font-medium tracking-wider text-neutral-100 uppercase transition-colors duration-300 transform bg-green-700 rounded-md hover:bg-green-800 focus:outline-none disabled:bg-red-400 absolute top-2 right-2"
-      disabled={candidatePage}
+      disabled={$candidatePage}
     >
       candidate
     </button>
@@ -141,7 +155,7 @@
                   id="name"
                   placeholder="Enter your name"
                   aria-label="Enter your name"
-                  value={$form.name}
+                  value={form.name}
                   on:change={handleChangeField}
                   disabled={toggle}
                 >
@@ -153,7 +167,7 @@
                   id="telephone"
                   placeholder="Enter your telephone"
                   aria-label="+12123456789"
-                  value={$form.telephone}
+                  value={form.telephone}
                   on:change={handleChangeField}
                   disabled={toggle}
                 >
@@ -165,7 +179,7 @@
                   id="email"
                   placeholder="Enter your email"
                   aria-label="Enter your email"
-                  value={$form.email}
+                  value={form.email}
                   on:change={handleChangeField}
                   disabled={toggle}
                 >

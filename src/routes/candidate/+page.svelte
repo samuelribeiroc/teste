@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { form } from "../../store/store";
+  import { savedFields } from "../../store/store";
 </script>
 
 <div class="w-screen h-screen bg-neutral-950">
@@ -8,7 +8,7 @@
       Back
     </button>
   </a>
-  <p class="text-white ml-2">Name: {$form.name}</p>
-  <p class="text-white ml-2">Telephone: {$form.telephone}</p>
-  <p class="text-white ml-2">Email: {$form.email}</p>
+  <p class="text-white ml-2">Name: {$savedFields.name}</p>
+  <p class="text-white ml-2">Telephone: {$savedFields.telephone}</p>
+  <p class="text-white ml-2">Email: {$savedFields.email}</p>
 </div>
